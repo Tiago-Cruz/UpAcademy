@@ -190,11 +190,12 @@ $(document).ready(function() {
 
 			if($(this).prop("checked") == true) {
 				alert("Checkbox is checked.");
-				$("#tablecheckbox input[name=select_one]:checked").closest('tr').css("background-color", "black", "!important");
+				$("#tablecheckbox input[name=select_one]:checked").closest('tr').css("background-color", "black");
 			}
 			else if($(this).prop("checked") == false) {
 
 				alert("Checkbox is unchecked.");
+				$("#tablecheckbox input[name=select_one]:checked").closest('tr').css("background-color", "none");
 			}	
 		});
 
