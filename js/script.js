@@ -85,10 +85,10 @@ $(document).ready(function() {
 					<div class="fixfloat"></div>
 					<br>
 					<a class="Wikipedia"></a>
-					<a href="https://www.google.pt/">Zoomato</a>
+					<a target="_blank "href="https://www.google.pt/">Zoomato</a>
 					<br>
-					<a href="https://foursquare.com/">Foursquare</a>
-					<a href="https://www.google.pt/">Outros</a>
+					<a target="_blank" href="https://foursquare.com/">Foursquare</a>
+					<a target="_blank" href="https://www.google.pt/">Outros</a>
 				</div>
 			</div> 
 		`;
@@ -186,16 +186,12 @@ $(document).ready(function() {
 		});
 
 		$("#tablecheckbox").on("click", 'input[class="select_one"]', function(){
-			console.log(1);
 
 			if($(this).prop("checked") == true) {
-				alert("Checkbox is checked.");
-				$("#tablecheckbox input[name=select_one]:checked").closest('tr').css("background-color", "black");
+				$("#tablecheckbox input[name=select_one]:checked").closest('tr').addClass("TR_active");
 			}
 			else if($(this).prop("checked") == false) {
-
-				alert("Checkbox is unchecked.");
-				$("#tablecheckbox input[name=select_one]:checked").closest('tr').css("background-color", "none");
+				$(this,"#tablecheckbox input[name=select_one]:not(:checked)").closest('tr').removeClass("TR_active");
 			}	
 		});
 
@@ -229,6 +225,7 @@ $(document).ready(function() {
 			if( index >= $allBooks.length-1 ){
 				$next = $allBooks.eq(0);
 				$("#bookContainer").hide();
+				$("#buttons").hide();
 				$("#endPage").show();
 			}
 			
@@ -246,7 +243,7 @@ $(document).ready(function() {
 			var opinion = $(this).attr("name");
 
 			addRow(id,name,price,opinion);
-			$("tbody > tr:odd").css("background-color", "white");
+			$("tbody > tr:odd").addClass("odd_active");
 
 			$("tr").hover( function (e) {
 
@@ -263,6 +260,7 @@ $(document).ready(function() {
 
 		$("#endPage").hide();
 		$("#bookContainer").show();
+		$("#buttons").show();
 	});
 
 	// FIM BOTÃO RESTART ------------------------------------------------------------
@@ -323,6 +321,8 @@ $(document).ready(function() {
 
 	// Nota: on click utilizado para fazer botões em sítios que ainda não fizeram load
 	// Exemplo: botões dentro da div bookContainer
+
+	//array opinion[] botão voltar a trás
 
 
 

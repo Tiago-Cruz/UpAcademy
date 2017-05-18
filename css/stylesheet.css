@@ -20,9 +20,8 @@
 
 .jumbotron {
 
-  position: absolute;
-  left:25%;
-  right:25%; 
+  width: 50%;
+  margin: auto; 
 }
 
 .grow img {
@@ -50,5 +49,27 @@
 
 #buttons {
 
-  text-align: center; 
+  padding-top: 70px;
+  text-align: center;
+  padding-bottom: 100px; 
+}
+
+#restartButton {
+
+  background-color: #0404B4;
+}
+
+#deleteButton {
+
+  background-color: #0404B4;
+}
+
+.TR_active {
+
+  background-color: red !important;
+}
+
+.odd_active {
+
+  background-color: white;
 }
