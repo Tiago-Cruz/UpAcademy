@@ -54,19 +54,9 @@
   padding-bottom: 100px; 
 }
 
-#restartButton {
-
-  background-color: #0404B4;
-}
-
-#deleteButton {
-
-  background-color: #0404B4;
-}
-
 .TR_active {
 
-  background-color: #BDBDBD !important;
+  background-color: #A4A4A4 !important;
 }
 
 .odd_active {
