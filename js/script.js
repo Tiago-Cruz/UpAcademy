@@ -8,13 +8,38 @@ $(document).ready(function() {
 	var UserID = "105291582947490372952";
 	var ShelfID = "1001";
 
-	//var q = ;
-	//var obj = ;
+	$("#searchButton").on("click", function(){
+        
+        var search = $("#Search").txt();
+		var terms = "intitle";
+
+        var titleSearch = search.val().toLowerCase();
+
+        $.ajax({
+
+        	url: "https://www.googleapis.com/books/v1/volumes?q=" + titleSearch + "+" + terms
+        
+        }).done(function(data){
+
+			console.log(data);
+
+			$.each(data.items,function(index,item){
+
+				$("#bookContainer").hide();
+        		$("#searchContainer").show();
+
+				LoadDataWithHTML(item);
+			});
+
+			console.log(data);
+		});
+
+        
+    });        
 
 	$.ajax({
 
 		url: "https://www.googleapis.com/books/v1/users/" + UserID + "/bookshelves/" + ShelfID + "/volumes?key=" + APIKey // API KEY
-
 		//data: { Authentication: ClienteID } //Cliente ID
 
 	}).done(function(data){
@@ -174,32 +199,55 @@ $(document).ready(function() {
 		$('input[id="select_all"]').click(function(){
 
 			if($(this).prop("checked") == true){
-					console.log(3);
-				alert("Checkbox is checked.");
+				
 				$("#tablecheckbox input[class=select_one]").prop("checked",true);
+				$("#tablecheckbox input[name=select_one]:checked").closest('tr').addClass("TR_active");
 			}
 			else if($(this).prop("checked") == false){
 
 				$("#tablecheckbox input[class=select_one]").prop("checked",false);
-				alert("Checkbox is unchecked.");
+				$("#tablecheckbox input[name=select_one]:not(:checked)").closest('tr').removeClass("TR_active");
 			}
 		});
 
 		$("#tablecheckbox").on("click", 'input[class="select_one"]', function(){
 
 			if($(this).prop("checked") == true) {
+
 				$("#tablecheckbox input[name=select_one]:checked").closest('tr').addClass("TR_active");
 			}
 			else if($(this).prop("checked") == false) {
+
 				$(this,"#tablecheckbox input[name=select_one]:not(:checked)").closest('tr').removeClass("TR_active");
 			}	
 		});
 
-		$('input[class="select_one"]').click(function(){
+		$("#tablecheckbox").on("click", 'input[class="select_one"]', function(){
 
 			if($('input[class="select_one"]').prop("checked") == true){
 
-				$("#tablecheckbox input[id=select_all]").prop("checked",true); 
+				$("input[type='checkbox'].select_one").change(function(){
+
+    				var size = $("input[type='checkbox'].select_one");
+    				if(size.length == size.filter(":checked").length){
+
+        				$("#tablecheckbox input[id=select_all]").prop("checked",true); 
+    				}
+				});	
+			}
+
+			if($('input[class="select_one"]').prop("checked") == false){
+
+				$("input[type='checkbox'].select_one").change(function(){
+
+    				var size = $("input[type='checkbox'].select_one");
+    				if(size.length == size.filter(":not(:checked)").length){
+
+        				$("#tablecheckbox input[id=select_all]").prop("checked",false); 
+    				}
+				});	
+
+				 
 			}
 		});
 
