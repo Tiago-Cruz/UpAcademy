@@ -8,31 +8,54 @@ $(document).ready(function() {
 	var UserID = "105291582947490372952";
 	var ShelfID = "1001";
 
-	$("#searchButton").on("click", function(){
+	$("#searchButton").click(function(){
+
+		var search = $("#Search").val().toLowerCase();
+		var author = $("#SearchAuthor").val().toLowerCase();
         
-        var search = $("#Search").txt();
 		var terms = "intitle";
+		var terms2 = "inauthor";
 
-        var titleSearch = search.val().toLowerCase();
+		if (search == "" & author == ""){
 
-        $.ajax({
+			console.log(1);
+			alert("A sua pesquisa não possui parâmetros!")
+			//$("#bookContainer").hide();
+        	container = $("bookContainer");
 
-        	url: "https://www.googleapis.com/books/v1/volumes?q=" + titleSearch + "+" + terms
+			//var linkURL = "https://www.googleapis.com/books/v1/volumes?q=" + terms + ":" + search + "+" + terms2 + ":" + author + "&key=" + APIKey
+
+		}
+		else if (search != "" & author == ""){
+
+			console.log(2);
+			alert("A sua pesquisa não possui autor!")
+			var linkURL = "https://www.googleapis.com/books/v1/volumes?q=" + terms + ":" + search + "&key=" + APIKey
+			ajaxConnection(linkURL)
+		}
+		else if (search == "" & author != ""){
+
+			console.log(3);
+			alert("A sua pesquisa não possui título!")
+			var linkURL = "https://www.googleapis.com/books/v1/volumes?q=" + terms2 + ":" + author + "&key=" + APIKey
+			ajaxConnection(linkURL)
+		}
+		else if (search != "" & author != ""){
+
+			console.log(4);
+			alert("A sua pesquisa possui todos os parâmetros!")
+			var linkURL = "https://www.googleapis.com/books/v1/volumes?q=" + terms + ":" + search + "+" + terms2 + ":" + author + "&key=" + APIKey
+			ajaxConnection(linkURL)
+		}
+
+
+
+		$("#bookContainer").hide();
+        container = $("#searchContainer");
+
+
+
         
-        }).done(function(data){
-
-			console.log(data);
-
-			$.each(data.items,function(index,item){
-
-				$("#bookContainer").hide();
-        		$("#searchContainer").show();
-
-				LoadDataWithHTML(item);
-			});
-
-			console.log(data);
-		});
 
         
     });        
@@ -48,10 +71,30 @@ $(document).ready(function() {
 
 		$.each(data.items,function(index,item){
 
-			LoadDataWithHTML(item);
+			container = $("#bookContainer");
+			LoadDataWithHTML(item, container);
 		});
 		console.log(data);
 	});
+
+	function ajaxConnection(linkURL) {
+
+		$.ajax({
+
+        	url: linkURL
+        
+        }).done(function(data){
+
+			console.log(data);
+
+			$.each(data.items,function(index,item){
+
+				LoadDataWithHTML(item, container);
+			});
+
+			console.log(data);
+		});
+	}
 
 	// FIM AJAX ---------------------------------------------------------------------
 
@@ -94,7 +137,7 @@ $(document).ready(function() {
 
 	// DECLARAÇÃO FUNÇÕES ---------------------------------------------------------
 
-	function LoadDataWithHTML(book){
+	function LoadDataWithHTML(book, container){
 
 		var HTMLtoInsert = `
 			<div class="col-xs-12 col-md-8 col-md-offset-2 book">
@@ -118,7 +161,7 @@ $(document).ready(function() {
 			</div> 
 		`;
 
-		$("#bookContainer").append(HTMLtoInsert);
+		container.append(HTMLtoInsert);
 		$currentBookHTML = $('.book').eq(-1);
 		$("h1",$currentBookHTML).text(book.volumeInfo.title);
 		$("p.descricao",$currentBookHTML).text(book.volumeInfo.description);
@@ -371,6 +414,9 @@ $(document).ready(function() {
 	// Exemplo: botões dentro da div bookContainer
 
 	//array opinion[] botão voltar a trás
+
+	//<form class="navbar-form navbar-left">
+	//</form>
 
 
 
