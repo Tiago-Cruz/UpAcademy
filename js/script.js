@@ -12,7 +12,7 @@ $(document).ready(function() {
 
 		var search = $("#Search").val().toLowerCase();
 		var author = $("#SearchAuthor").val().toLowerCase();
-        
+
 		var terms = "intitle";
 		var terms2 = "inauthor";
 
@@ -20,45 +20,37 @@ $(document).ready(function() {
 
 			console.log(1);
 			alert("A sua pesquisa não possui parâmetros!")
-			//$("#bookContainer").hide();
-        	container = $("bookContainer");
-
-			//var linkURL = "https://www.googleapis.com/books/v1/volumes?q=" + terms + ":" + search + "+" + terms2 + ":" + author + "&key=" + APIKey
-
+			
+			container = $("bookContainer");
 		}
 		else if (search != "" & author == ""){
 
 			console.log(2);
 			alert("A sua pesquisa não possui autor!")
 			var linkURL = "https://www.googleapis.com/books/v1/volumes?q=" + terms + ":" + search + "&key=" + APIKey
-			ajaxConnection(linkURL)
+			ajaxConnection(linkURL);
+			$("#bookContainer").hide();
+			container = $("#searchContainer");
 		}
 		else if (search == "" & author != ""){
 
 			console.log(3);
 			alert("A sua pesquisa não possui título!")
 			var linkURL = "https://www.googleapis.com/books/v1/volumes?q=" + terms2 + ":" + author + "&key=" + APIKey
-			ajaxConnection(linkURL)
+			ajaxConnection(linkURL);
+			$("#bookContainer").hide();
+			container = $("#searchContainer");
 		}
 		else if (search != "" & author != ""){
 
 			console.log(4);
 			alert("A sua pesquisa possui todos os parâmetros!")
 			var linkURL = "https://www.googleapis.com/books/v1/volumes?q=" + terms + ":" + search + "+" + terms2 + ":" + author + "&key=" + APIKey
-			ajaxConnection(linkURL)
-		}
-
-
-
-		$("#bookContainer").hide();
-        container = $("#searchContainer");
-
-
-
-        
-
-        
-    });        
+			ajaxConnection(linkURL);
+			$("#bookContainer").hide();
+			container = $("#searchContainer");
+		}     
+	});        
 
 	$.ajax({
 
@@ -81,9 +73,9 @@ $(document).ready(function() {
 
 		$.ajax({
 
-        	url: linkURL
-        
-        }).done(function(data){
+			url: linkURL
+
+		}).done(function(data){
 
 			console.log(data);
 
@@ -140,36 +132,110 @@ $(document).ready(function() {
 	function LoadDataWithHTML(book, container){
 
 		var HTMLtoInsert = `
-			<div class="col-xs-12 col-md-8 col-md-offset-2 book">
-				<div class="grow pic">
-					<img class="img-thumbnail center-block img-fluid">
-				</div>
-				<p></p>
-				<div class="jumbotron">
-					<h1></h1>
-					<p class="descricao"></p>
-					<p class="price"></p>
+		<div class="col-xs-12 col-md-8 col-md-offset-2 book">
+		<div class="grow pic">
+		<img class="img-thumbnail center-block img-fluid">
+		</div>
+		<p></p>
+		<div class="jumbotron">
+		<h1></h1>
+		<p class="descricao comment"></p>
+		<p class="price"></p>
 
-					<div class="fixfloat"></div>
-					<br>
-					<a class="Wikipedia"></a>
-					<a target="_blank "href="https://www.google.pt/">Zoomato</a>
-					<br>
-					<a target="_blank" href="https://foursquare.com/">Foursquare</a>
-					<a target="_blank" href="https://www.google.pt/">Outros</a>
-				</div>
-			</div> 
+		<div class="fixfloat"></div>
+		<br>
+		<a class="Wikipedia"></a>
+		<a target="_blank "href="https://www.google.pt/">Zoomato</a>
+		<br>
+		<a target="_blank" href="https://foursquare.com/">Foursquare</a>
+		<a target="_blank" href="https://www.google.pt/">Outros</a>
+		</div>
+		</div> 
 		`;
 
 		container.append(HTMLtoInsert);
 		$currentBookHTML = $('.book').eq(-1);
 		$("h1",$currentBookHTML).text(book.volumeInfo.title);
 		$("p.descricao",$currentBookHTML).text(book.volumeInfo.description);
-		$("img",$currentBookHTML).attr("src",book.volumeInfo.imageLinks.thumbnail);
-		 
+
+		if (typeof book.volumeInfo.imageLinks != "undefined") {
+
+			$("img",$currentBookHTML).attr("src",book.volumeInfo.imageLinks.thumbnail);
+		}
+		else {
+
+			$("img",$currentBookHTML).attr("src","img/noImg.jpg");
+		}
+
+		(function($) {
+			$.fn.shorten = function (settings) {
+
+				var config = {
+					showChars: 100,
+					ellipsesText: "...",
+					moreText: "more",
+					lessText: "less"
+				};
+
+				if (settings) {
+					$.extend(config, settings);
+				}
+
+				$(document).off("click", '.morelink');
+
+				$(document).on({click: function () {
+
+					var $this = $(this);
+					if ($this.hasClass('less')) {
+						$this.removeClass('less');
+						$this.html(config.moreText);
+					} else {
+						$this.addClass('less');
+						$this.html(config.lessText);
+					}
+					$this.parent().prev().toggle();
+					$this.prev().toggle();
+					return false;
+				}
+			}, '.morelink');
+
+				return this.each(function () {
+
+					var $this = $(this);
+					if($this.hasClass("shortened")) return;
+
+					$this.addClass("shortened");
+					var content = $this.html();
+					if (content.length > config.showChars) {
+						var c = content.substr(0, config.showChars);
+						var h = content.substr(config.showChars, content.length - config.showChars);
+						var html = c + '<span class="moreellipses">' + config.ellipsesText + ' </span><span class="morecontent"><span>' + h + '</span> <a href="#" class="morelink">' + config.moreText + '</a></span>';
+						$this.html(html);
+						$(".morecontent span").hide();
+					}
+				});
+
+			};
+
+		})(jQuery);
+
+		$( ".dropdown" ).hover(
+			function(){
+				$(this).children(".dropdown-menu").slideDown(200);
+			},
+			function(){
+				$(this).children(".dropdown-menu").slideUp(200);
+			}
+		);
+		
+		$(".comment").shorten();
 		$(".book:first-of-type").addClass("active");
 	}
 
+	function myFunction1() {
+
+    	document.getElementById("dropdownMenu1").classList.toggle("show");
+	}
 	/*function LoadData(){
 
 		$allBooks = $(".book");
@@ -195,11 +261,11 @@ $(document).ready(function() {
 
 		$newrow = `
 		<tr>
-			<td><input type="checkbox" name="select_one" value="1" class="select_one"></td>
-			<td>` + id + `</td>
-			<td>` + name + `</td>
-			<td>` + price + `</td>
-			<td>` + opinion + `</td>
+		<td><input type="checkbox" name="select_one" value="1" class="select_one"></td>
+		<td>` + id + `</td>
+		<td>` + name + `</td>
+		<td>` + price + `</td>
+		<td>` + opinion + `</td>
 		</tr>
 		`;
 
@@ -217,8 +283,8 @@ $(document).ready(function() {
 				tr.fadeOut(600, function() {
 
 					$("#tablecheckbox input[id=select_all]").prop("checked",false); 
-      				tr.remove(); 
-    			});
+					tr.remove(); 
+				});
 
 			}
 			else if ($( "input:checked" ).length <= 0){
@@ -239,60 +305,60 @@ $(document).ready(function() {
 
 	// INÍCIO CHECKBOX ----------------------------------------------------------------
 
-		$('input[id="select_all"]').click(function(){
+	$('input[id="select_all"]').click(function(){
 
-			if($(this).prop("checked") == true){
-				
-				$("#tablecheckbox input[class=select_one]").prop("checked",true);
-				$("#tablecheckbox input[name=select_one]:checked").closest('tr').addClass("TR_active");
-			}
-			else if($(this).prop("checked") == false){
+		if($(this).prop("checked") == true){
 
-				$("#tablecheckbox input[class=select_one]").prop("checked",false);
-				$("#tablecheckbox input[name=select_one]:not(:checked)").closest('tr').removeClass("TR_active");
-			}
-		});
+			$("#tablecheckbox input[class=select_one]").prop("checked",true);
+			$("#tablecheckbox input[name=select_one]:checked").closest('tr').addClass("TR_active");
+		}
+		else if($(this).prop("checked") == false){
 
-		$("#tablecheckbox").on("click", 'input[class="select_one"]', function(){
+			$("#tablecheckbox input[class=select_one]").prop("checked",false);
+			$("#tablecheckbox input[name=select_one]:not(:checked)").closest('tr').removeClass("TR_active");
+		}
+	});
 
-			if($(this).prop("checked") == true) {
+	$("#tablecheckbox").on("click", 'input[class="select_one"]', function(){
 
-				$("#tablecheckbox input[name=select_one]:checked").closest('tr').addClass("TR_active");
-			}
-			else if($(this).prop("checked") == false) {
+		if($(this).prop("checked") == true) {
 
-				$(this,"#tablecheckbox input[name=select_one]:not(:checked)").closest('tr').removeClass("TR_active");
-			}	
-		});
+			$("#tablecheckbox input[name=select_one]:checked").closest('tr').addClass("TR_active");
+		}
+		else if($(this).prop("checked") == false) {
 
-		$("#tablecheckbox").on("click", 'input[class="select_one"]', function(){
+			$(this,"#tablecheckbox input[name=select_one]:not(:checked)").closest('tr').removeClass("TR_active");
+		}	
+	});
 
-			if($('input[class="select_one"]').prop("checked") == true){
+	$("#tablecheckbox").on("click", 'input[class="select_one"]', function(){
 
-				$("input[type='checkbox'].select_one").change(function(){
+		if($('input[class="select_one"]').prop("checked") == true){
 
-    				var size = $("input[type='checkbox'].select_one");
-    				if(size.length == size.filter(":checked").length){
+			$("input[type='checkbox'].select_one").change(function(){
 
-        				$("#tablecheckbox input[id=select_all]").prop("checked",true); 
-    				}
-				});	
-			}
+				var size = $("input[type='checkbox'].select_one");
+				if(size.length == size.filter(":checked").length){
 
-			if($('input[class="select_one"]').prop("checked") == false){
+					$("#tablecheckbox input[id=select_all]").prop("checked",true); 
+				}
+			});	
+		}
 
-				$("input[type='checkbox'].select_one").change(function(){
+		if($('input[class="select_one"]').prop("checked") == false){
 
-    				var size = $("input[type='checkbox'].select_one");
-    				if(size.length == size.filter(":not(:checked)").length){
+			$("input[type='checkbox'].select_one").change(function(){
 
-        				$("#tablecheckbox input[id=select_all]").prop("checked",false); 
-    				}
-				});	
+				var size = $("input[type='checkbox'].select_one");
+				if(size.length == size.filter(":not(:checked)").length){
 
-				 
-			}
-		});
+					$("#tablecheckbox input[id=select_all]").prop("checked",false); 
+				}
+			});	
+
+
+		}
+	});
 
 	// FIM CHECKBOX ----------------------------------------------------------------
 
@@ -417,6 +483,31 @@ $(document).ready(function() {
 
 	//<form class="navbar-form navbar-left">
 	//</form>
+
+	/*$('#topicInput').keyup(function(){
+
+        var topic = $(this).val();
+        if (topic==''){
+            $('#tagResult').css("display" , "none");
+        }
+        else{
+            //$('div').click(function(){
+                //$('#tagResult').css("display" , "none");
+
+            //});
+            $('#tagResult').css("display" , "block");
+
+                $.post('../topic.php' , {topic: topic} , function(response){
+
+                $('#tagResult').html(response);     
+                });
+            }
+    });
+     //the above code is working properly
+
+$('.topicResult').click(function(){
+    alert(1);   //this is just a test, but it never shows up
+});*/
 
 
 
