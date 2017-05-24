@@ -2,21 +2,115 @@ $(document).ready(function() {
 
 	console.log("Ready!");
 
-	// AJAX -------------------------------------------------------------------------
+	// DATABASE -------------------------------------------------------------------------
+
+	var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
+
+	db.transaction(function (tx) {
+		
+    	tx.executeSql('CREATE TABLE IF NOT EXISTS books (id unique, opinion)');
+ 	});
+
+	// DATABASE -------------------------------------------------------------------------
+
+	// AJAX -----------------------------------------------------------------------------
 
 	var APIKey = "AIzaSyAWyjXY459MAyt2tChVsghBOPVU4ivqFfo";
 	var UserID = "105291582947490372952";
 	var ShelfID = "1001";
 
+	/*$("#Search, #SearchFilter").keyup(function(event){
+		
+		var search = $("#Search").val().toLowerCase();
+		var searchfilter = $("#SearchFilter").val().toLowerCase();
+		var option = $("#filterOptions option").filter(':selected').text();
+
+		var defaultLink = "https://www.googleapis.com/books/v1/volumes?q=" + search + "+";
+		var linkURL = " ";
+
+		switch (option.toLowerCase()) {
+
+			case 'title':
+				console.log(1);
+				linkURL = defaultLink + "intitle:" + searchfilter
+				break;
+
+			case 'author':
+				console.log(2);
+				linkURL = defaultLink + "inauthor:" + searchfilter
+				break;
+
+			case 'publisher':
+				console.log(3);
+				linkURL = defaultLink + "inpublisher:" + searchfilter
+				break;
+
+			case 'volume':
+				console.log(4);
+				linkURL = defaultLink + "subject:" + searchfilter
+				break;
+
+			case 'isbn':
+				console.log(5);
+				linkURL = defaultLink + "isbn:" + searchfilter
+				break;
+
+			default:
+				console.log('fgh');
+				break;
+		}
+
+		ajaxConnection(linkURL);
+		$("#bookContainer").hide();
+		container = $("#searchContainer");
+	});*/
+
 	$("#searchButton").click(function(){
 
 		var search = $("#Search").val().toLowerCase();
-		var author = $("#SearchAuthor").val().toLowerCase();
+		var searchfilter = $("#SearchFilter").val().toLowerCase();
+		var option = $("#filterOptions option").filter(':selected').text();
 
-		var terms = "intitle";
-		var terms2 = "inauthor";
+		var defaultLink = "https://www.googleapis.com/books/v1/volumes?q=" + search + "+";
+		var linkURL = " ";
 
-		if (search == "" & author == ""){
+		switch (option.toLowerCase()) {
+
+			case 'title':
+				console.log(1);
+				linkURL = defaultLink + "intitle:" + searchfilter
+				break;
+
+			case 'author':
+				console.log(2);
+				linkURL = defaultLink + "inauthor:" + searchfilter
+				break;
+
+			case 'publisher':
+				console.log(3);
+				linkURL = defaultLink + "inpublisher:" + searchfilter
+				break;
+
+			case 'volume':
+				console.log(4);
+				linkURL = defaultLink + "subject:" + searchfilter
+				break;
+
+			case 'isbn':
+				console.log(5);
+				linkURL = defaultLink + "isbn:" + searchfilter
+				break;
+
+			default:
+				console.log('fgh');
+				break;
+		}
+
+		ajaxConnection(linkURL);
+		$("#bookContainer").hide();
+		container = $("#searchContainer");
+
+		/*if (search == "" & author == ""){
 
 			console.log(1);
 			alert("A sua pesquisa não possui parâmetros!")
@@ -49,8 +143,8 @@ $(document).ready(function() {
 			ajaxConnection(linkURL);
 			$("#bookContainer").hide();
 			container = $("#searchContainer");
-		}     
-	});        
+		}*/     
+	});   
 
 	$.ajax({
 
@@ -142,6 +236,15 @@ $(document).ready(function() {
 		<p class="descricao comment"></p>
 		<p class="price"></p>
 
+		<input type="hidden" class="hiddenFieldId"></input>
+
+		<button data-opinion="Like" name="Like" type="button" class="btn btn-success btn-lg like">
+			<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> Gosto!
+		</button>
+		<button data-opinion="Dislike" name="DisLike" type="button" class="btn btn-danger btn-lg dislike">
+			<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span> Não Gosto!
+		</button>
+
 		<div class="fixfloat"></div>
 		<br>
 		<a class="Wikipedia"></a>
@@ -157,6 +260,7 @@ $(document).ready(function() {
 		$currentBookHTML = $('.book').eq(-1);
 		$("h1",$currentBookHTML).text(book.volumeInfo.title);
 		$("p.descricao",$currentBookHTML).text(book.volumeInfo.description);
+		$('.hiddenFieldId',$currentBookHTML).text(book.id);
 
 		if (typeof book.volumeInfo.imageLinks != "undefined") {
 
@@ -232,10 +336,7 @@ $(document).ready(function() {
 		$(".book:first-of-type").addClass("active");
 	}
 
-	function myFunction1() {
-
-    	document.getElementById("dropdownMenu1").classList.toggle("show");
-	}
+	
 	/*function LoadData(){
 
 		$allBooks = $(".book");
@@ -366,16 +467,17 @@ $(document).ready(function() {
 
 	var inAnimation = false;
 
-	$("button.like, button.dislike").click(function(){
-		
+	$(".bookContainer").on("click",".book button",function(){//$("button.like, button.dislike").click(function(){
+		console.log('button')
 		if(inAnimation == false){
 
 			inAnimation = true;
 
-			$allBooks = $(".book");
-			$parent = $(".book.active");
+			//$allBooks = $(".book");
+			//$parent = $(".book.active");
+			$book = $(".book.active");
 
-			var index = $allBooks.index($parent);
+			/*var index = $allBooks.index($parent);
 			$next = $parent.next(".book");
 			$parent.removeClass("active");
 
@@ -384,12 +486,23 @@ $(document).ready(function() {
 				$("#bookContainer").hide();
 				$("#buttons").hide();
 				$("#endPage").show();
-			}
+			}*/
+
+			// vamos buscar o ID ao nosso hiddenfield
+			$id = $(".hiddenFieldId",$book).text();
+
+			// vamos buscar a opinion ao nosso custom attribute
+			$opinion = $(this).attr("data-opinion");
+
+			db.transaction(function (tx) {
+				//insert na table que criámos
+				tx.executeSql("INSERT INTO books(id, opinion) VALUES('" + $id + "','" + $opinion + "')");
+			});
 			
-			$parent.fadeOut(500,function(){
-				$parent.removeClass("active");
-				$next.fadeIn(500,function(){
-					$next.addClass("active");
+			$book.fadeOut(500,function(){
+				$book.removeClass("active");//$parent.removeClass("active");
+				$book.next(".book").fadeIn(500,function(){
+					$book.next(".book").addClass("active");
 					inAnimation = false;
 				});
 			});	
