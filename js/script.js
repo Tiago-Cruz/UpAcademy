@@ -184,44 +184,9 @@ $(document).ready(function() {
 
 	// FIM AJAX ---------------------------------------------------------------------
 
-	// DECLARAÇÃO DICIONÁRIOS -------------------------------------------------------
+	// DECLARAÇÃO FUNÇÕES -----------------------------------------------------------
 
-	/*var bookDictionary1 = {
-		id: "1", 
-		name:"Harry Potter e o Calice de Fogo!", 
-		descricao: "Harry Potter e o Cálice de Fogo (no original em inglês Harry Potter and the Goblet of Fire) é o quarto livro dos sete volumes da série de fantasia Harry Potter, tanto em termos cronológicos como em ordem de publicação, da autora inglesa J. K. Rowling.", 
-		price: 19.99, 
-		img: "img/Harry Potter1.jpg",
-		href: "https://www.wikipedia.org/"
-	};
-
-	var bookDictionary2 = {
-		id: "2", 
-		name:"Harry Potter e as Reliquias da Morte!", 
-		descricao: "The Deathly Hallows, publicado no Brasil sob o título Harry Potter e as Relíquias da Morte e em Portugal como Harry Potter e os Talismãs da Morte, é o sétimo livro série Harry Potter da escritora britânica J. K. Rowling.", 
-		price: 20.99, 
-		img: "img/Harry Potter2.jpg",
-		href: "https://www.wikipedia.org/"
-	};
-
-	var bookDictionary3 = { 
-		id: "3",
-		name:"Harry Potter e a Pedra Filosofal!", 
-		descricao: "Harry Potter e a Pedra Filosofal (no original em inglês Harry Potter and the Philosopher's Stone) é o primeiro livro dos sete volumes da série de fantasia Harry Potter, tanto em termos cronológicos como em ordem de publicação, da autora inglesa J. K. Rowling.", 
-		price: 30.99, 
-		img: "img/Harry Potter3.png",
-		href: "https://www.wikipedia.org/"
-	};
-
-	var sectionTable = { 
-		name:"Tinder dos Livros"
-	};*/
-
-	//var Library = new Array(bookDictionary1, bookDictionary2, bookDictionary3);
-
-	// FIM DECLARAÇÃO DICIONÁRIOS -------------------------------------------------
-
-	// DECLARAÇÃO FUNÇÕES ---------------------------------------------------------
+	// FUNCAO LOAD DATA -------------------------------------------------------------
 
 	function LoadDataWithHTML(book, container){
 
@@ -271,58 +236,6 @@ $(document).ready(function() {
 			$("img",$currentBookHTML).attr("src","img/noImg.jpg");
 		}
 
-		(function($) {
-			$.fn.shorten = function (settings) {
-
-				var config = {
-					showChars: 100,
-					ellipsesText: "...",
-					moreText: "more",
-					lessText: "less"
-				};
-
-				if (settings) {
-					$.extend(config, settings);
-				}
-
-				$(document).off("click", '.morelink');
-
-				$(document).on({click: function () {
-
-					var $this = $(this);
-					if ($this.hasClass('less')) {
-						$this.removeClass('less');
-						$this.html(config.moreText);
-					} else {
-						$this.addClass('less');
-						$this.html(config.lessText);
-					}
-					$this.parent().prev().toggle();
-					$this.prev().toggle();
-					return false;
-				}
-			}, '.morelink');
-
-				return this.each(function () {
-
-					var $this = $(this);
-					if($this.hasClass("shortened")) return;
-
-					$this.addClass("shortened");
-					var content = $this.html();
-					if (content.length > config.showChars) {
-						var c = content.substr(0, config.showChars);
-						var h = content.substr(config.showChars, content.length - config.showChars);
-						var html = c + '<span class="moreellipses">' + config.ellipsesText + ' </span><span class="morecontent"><span>' + h + '</span> <a href="#" class="morelink">' + config.moreText + '</a></span>';
-						$this.html(html);
-						$(".morecontent span").hide();
-					}
-				});
-
-			};
-
-		})(jQuery);
-
 		$( ".dropdown" ).hover(
 			function(){
 				$(this).children(".dropdown-menu").slideDown(200);
@@ -336,27 +249,65 @@ $(document).ready(function() {
 		$(".book:first-of-type").addClass("active");
 	}
 
-	
-	/*function LoadData(){
+	// FIM FUNCAO LOAD DATA -------------------------------------------------------------
 
-		$allBooks = $(".book");
+	// FUNCAO LESS OR MORE...--------------------------------------------------------
 
-		jQuery.each(Library,function(index,value){
+	(function($) {
+		$.fn.shorten = function (settings) {
 
-			$currentBook = $allBooks.eq(index);
+			var config = {
+				showChars: 100,
+				ellipsesText: "...",
+				moreText: "more",
+				lessText: "less"
+			};
 
-			$("h1",$currentBook).text(value.name);
-			$("p.descricao",$currentBook).text(value.descricao);
-			$("p.price",$currentBook).text(value.price);
-			$("img",$currentBook).attr("src",value.img);
-			$("a.Wikipedia",$currentBook).attr("href",value.href);
-			$("a.Wikipedia", $currentBook).text("Wikipedia");
+			if (settings) {
+				$.extend(config, settings);
+			}
 
-		});
+			$(document).off("click", '.morelink');
 
-		var $alteracTable = $(".endPageTable");
-		$("h1", $alteracTable).text(sectionTable.name);
-	}*/
+			$(document).on({click: function () {
+
+				var $this = $(this);
+				if ($this.hasClass('less')) {
+					$this.removeClass('less');
+					$this.html(config.moreText);
+				} else {
+					$this.addClass('less');
+					$this.html(config.lessText);
+				}
+				$this.parent().prev().toggle();
+				$this.prev().toggle();
+				return false;
+			}
+		}, '.morelink');
+
+			return this.each(function () {
+
+				var $this = $(this);
+				if($this.hasClass("shortened")) return;
+
+				$this.addClass("shortened");
+				var content = $this.html();
+				if (content.length > config.showChars) {
+					var c = content.substr(0, config.showChars);
+					var h = content.substr(config.showChars, content.length - config.showChars);
+					var html = c + '<span class="moreellipses">' + config.ellipsesText + ' </span><span class="morecontent"><span>' + h + '</span> <a href="#" class="morelink">' + config.moreText + '</a></span>';
+					$this.html(html);
+					$(".morecontent span").hide();
+				}
+			});
+
+		};
+
+	})(jQuery);
+
+	// FIM FUNCAO LESS OR MORE...-------------------------------------------------
+
+	// FUNCAO ADDROW -------------------------------------------------------------
 
 	function addRow(id,name,price,opinion){
 
@@ -373,7 +324,7 @@ $(document).ready(function() {
 		$("tbody", $("#tablecheckbox")).append($newrow);
 	}
 
-	//function deleteRow(){
+	// FUNCAO DELETE ROW --------------------------------------------------------------
 
 		$("#deleteButton").click(function(){
 
@@ -393,16 +344,10 @@ $(document).ready(function() {
 				alert("Não tem nenhuma linha selecionada!");
 			}
 		});
-	//}
+	
+	// FIM FUNCAO DELETE ROW --------------------------------------------------------------
 
-	// Fim DECLARAÇÃO FUNÇÕES ---------------------------------------------------------
-
-	// LOAD DA PÁGINA -----------------------------------------------------------------
-
-	//LoadDataWithHTML();
-	//LoadData();
-
-	// FIM LOAD DA PÁGINA -------------------------------------------------------------
+	// FIM DECLARAÇÃO FUNÇÕES ---------------------------------------------------------
 
 	// INÍCIO CHECKBOX ----------------------------------------------------------------
 
@@ -465,28 +410,35 @@ $(document).ready(function() {
 
 	// BOTÃO LIKE & DISLIKE --------------------------------------------------------
 
+	db.transaction(function (tx) {
+
+		tx.executeSql('DROP TABLE books');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS books (id unique, opinion)');
+	});
+
 	var inAnimation = false;
 
-	$(".bookContainer").on("click",".book button",function(){//$("button.like, button.dislike").click(function(){
+	$("#bookContainer").on("click",".book button",function(){//$("button.like, button.dislike").click(function(){
 		console.log('button')
 		if(inAnimation == false){
 
 			inAnimation = true;
 
-			//$allBooks = $(".book");
+			$allBooks = $(".book");
 			//$parent = $(".book.active");
 			$book = $(".book.active");
 
-			/*var index = $allBooks.index($parent);
-			$next = $parent.next(".book");
-			$parent.removeClass("active");
+			var index = $allBooks.index($book);
+			$next = $book.next(".book");
+			$book.removeClass("active");
 
-			if( index >= $allBooks.length-1 ){
+			if( index == $allBooks.length-1 ){
 				$next = $allBooks.eq(0);
 				$("#bookContainer").hide();
-				$("#buttons").hide();
+				//$("#buttons").hide();
+
 				$("#endPage").show();
-			}*/
+			}
 
 			// vamos buscar o ID ao nosso hiddenfield
 			$id = $(".hiddenFieldId",$book).text();
@@ -495,21 +447,22 @@ $(document).ready(function() {
 			$opinion = $(this).attr("data-opinion");
 
 			db.transaction(function (tx) {
+
 				//insert na table que criámos
 				tx.executeSql("INSERT INTO books(id, opinion) VALUES('" + $id + "','" + $opinion + "')");
 			});
 			
 			$book.fadeOut(500,function(){
 				$book.removeClass("active");//$parent.removeClass("active");
-				$book.next(".book").fadeIn(500,function(){
-					$book.next(".book").addClass("active");
+				$next.fadeIn(500,function(){
+					$next.addClass("active");
 					inAnimation = false;
 				});
 			});	
 
-			var id = "1";
-			var name = $("h1", $parent).text();
-			var price = $("p.price",$parent).text();
+			var id = index;
+			var name = $("h1", $book).text();
+			var price = $("p.price",$book).text();
 			var opinion = $(this).attr("name");
 
 			addRow(id,name,price,opinion);
@@ -524,78 +477,40 @@ $(document).ready(function() {
 
 	// FIM BOTÃO LIKE & DISLIKE -----------------------------------------------------
 
+	// CONSULTA BASE DE DADOS -------------------------------------------------------
+
+	$('#consultDb').click(function(){
+		db.transaction(function (tx) {
+		//buscar todos os resultados da nossa table
+			tx.executeSql('SELECT * FROM books', [], function (tx, results) {
+	   			$.each(results.rows,function(index,item){
+	   				//output de todas as rows/todos os resultados
+					console.log(item);
+				});
+			}, null);
+		});
+	});
+
+	// FIM CONSULTA BASE DE DADOS ---------------------------------------------------
+
 	// BOTÃO RESTART ----------------------------------------------------------------
 
 	$("#restartButton").click(function(){
 
 		$("#endPage").hide();
+		
 		$("#bookContainer").show();
-		$("#buttons").show();
+		//$("#buttons").show();
 	});
 
 	// FIM BOTÃO RESTART ------------------------------------------------------------
 
 });
-
-//$("#tablecheckbox input[type=checkbox]:checked");
-		//$("#tablecheckbox input[id=select_all]:checked");
-		//var teste = $("#tablecheckbox input[id=select_all]:checked");
-		//console.log("teste", teste);
-
-		/*$("#select_all").click(function() {
-
-			if ($("#tablecheckbox input[id=select_all]:checked")){
-
-				$("#tablecheckbox input[type=checkbox]").prop("checked",true);
-			} else {
-
-				$("#tablecheckbox input[type=checkbox]").prop("checked",false);
-			}
-		});*/
-
-		/*$(".book button.dislike").click(function() {
-
-		$allBooks = $(".book");
-		$parent = $(this).parents(".book");
-
-		var id = "1";
-		var name = $("h1", $parent).text();
-		var price = $("p.price",$parent).text();
-		var opinion = $(this).attr("name");
-		
-		addRow(id,name,price,opinion);
-		$("tbody > tr:odd").css("background-color", "white");
-
-		$("tr").hover( function (e) {
-
-			$(this).toggleClass('hover', e.type === 'mouseenter');
-		});
-		
-		var index = $allBooks.index($parent);
-		$next = $parent.next(".book");
-		$parent.removeClass("active");
-
-		if( index >= $allBooks.length-1 ){
-			$next = $allBooks.eq(0);
-			$("#bookContainer").hide();
-			$("#endPage").show();
-		}
-		
-		$parent.fadeOut(500,function(){
-			$parent.removeClass("active");
-			$next.fadeIn(500,function(){
-				$next.addClass("active");
-			});
-		});
-	});*/
-
+	
 	// Nota: on click utilizado para fazer botões em sítios que ainda não fizeram load
 	// Exemplo: botões dentro da div bookContainer
 
 	//array opinion[] botão voltar a trás
-
-	//<form class="navbar-form navbar-left">
-	//</form>
 
 	/*$('#topicInput').keyup(function(){
 
