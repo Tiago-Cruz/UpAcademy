@@ -24,7 +24,7 @@
   margin: auto; 
 }
 
-.grow img {
+/*.grow img {
 
   height: 500px;
   width: 316px;
@@ -40,7 +40,7 @@
 
   width: 500px;
   height: 316px;
-}
+}*/
 
 .hover {
 
@@ -62,4 +62,10 @@
 .odd_active {
 
   background-color: white;
+}
+
+.img-thumbnail {
+
+  height: auto;
+  width: 200px;
 }
