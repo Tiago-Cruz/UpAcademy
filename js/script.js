@@ -8,98 +8,27 @@ $(document).ready(function() {
 
 	db.transaction(function (tx) {
 		
-    	tx.executeSql('CREATE TABLE IF NOT EXISTS books (id unique, opinion)');
- 	});
+		tx.executeSql('CREATE TABLE IF NOT EXISTS books (id unique, title, opinion)');
+	});
 
 	// DATABASE -------------------------------------------------------------------------
 
-
-	// AJAX -------------------------------------------------------------------------
+	// AJAX -----------------------------------------------------------------------------
 
 	var APIKey = "AIzaSyAWyjXY459MAyt2tChVsghBOPVU4ivqFfo";
 	var UserID = "105291582947490372952";
 	var ShelfID = "1001";
 
-	$("#searchButton").click(function(){
+	/*$("#searchButton").click(function(){
 
-		var search = $("#Search").val().toLowerCase();
-		var searchfilter = $("#SearchFilter").val().toLowerCase();
-		var option = $("#filterOptions option").filter(':selected').text();
-
-		var defaultLink = "https://www.googleapis.com/books/v1/volumes?q=" + search + "+";
-		var linkURL = "";
-
-		switch (option.toLowerCase()) {
-
-			case 'title':
-				console.log(1);
-				linkURL = defaultLink + "intitle:" + searchfilter
-				break;
-
-			case 'author':
-				console.log(2);
-				linkURL = defaultLink + "inauthor:" + searchfilter
-				break;
-
-			case 'publisher':
-				console.log(3);
-				linkURL = defaultLink + "inpublisher:" + searchfilter
-				break;
-
-			case 'volume':
-				console.log(4);
-				linkURL = defaultLink + "subject:" + searchfilter
-				break;
-
-			case 'isbn':
-				console.log(5);
-				linkURL = defaultLink + "isbn:" + searchfilter
-				break;
-
-			default:
-				console.log('fgh');
-				break;
-		}
+		
 
 		ajaxConnection(linkURL);
 		$("#bookContainer").hide();
 		container = $("#searchContainer");
 
-		/*if (search == "" & author == ""){
-
-			console.log(1);
-			alert("A sua pesquisa não possui parâmetros!")
-			
-			container = $("bookContainer");
-		}
-		else if (search != "" & author == ""){
-
-			console.log(2);
-			alert("A sua pesquisa não possui autor!")
-			var linkURL = "https://www.googleapis.com/books/v1/volumes?q=" + terms + ":" + search + "&key=" + APIKey
-			ajaxConnection(linkURL);
-			$("#bookContainer").hide();
-			container = $("#searchContainer");
-		}
-		else if (search == "" & author != ""){
-
-			console.log(3);
-			alert("A sua pesquisa não possui título!")
-			var linkURL = "https://www.googleapis.com/books/v1/volumes?q=" + terms2 + ":" + author + "&key=" + APIKey
-			ajaxConnection(linkURL);
-			$("#bookContainer").hide();
-			container = $("#searchContainer");
-		}
-		else if (search != "" & author != ""){
-
-			console.log(4);
-			alert("A sua pesquisa possui todos os parâmetros!")
-			var linkURL = "https://www.googleapis.com/books/v1/volumes?q=" + terms + ":" + search + "+" + terms2 + ":" + author + "&key=" + APIKey
-			ajaxConnection(linkURL);
-			$("#bookContainer").hide();
-			container = $("#searchContainer");
-		} */    
-	});        
+		
+	}); */     
 
 	$.ajax({
 
@@ -113,7 +42,7 @@ $(document).ready(function() {
 		$.each(data.items,function(index,item){
 
 			container = $("#bookContainer");
-			LoadDataWithHTML(item, container);
+			LoadDataWithHTML(item);
 		});
 		console.log(data);
 	});
@@ -130,55 +59,18 @@ $(document).ready(function() {
 
 			$.each(data.items,function(index,item){
 
-				LoadDataWithHTML(item, container);
+				LoadDataWithHTML(item);
 			});
 
 			console.log(data);
 		});
-	}
+	} 
 
 	// FIM AJAX ---------------------------------------------------------------------
 
-	// DECLARAÇÃO DICIONÁRIOS -------------------------------------------------------
-
-	/*var bookDictionary1 = {
-		id: "1", 
-		name:"Harry Potter e o Calice de Fogo!", 
-		descricao: "Harry Potter e o Cálice de Fogo (no original em inglês Harry Potter and the Goblet of Fire) é o quarto livro dos sete volumes da série de fantasia Harry Potter, tanto em termos cronológicos como em ordem de publicação, da autora inglesa J. K. Rowling.", 
-		price: 19.99, 
-		img: "img/Harry Potter1.jpg",
-		href: "https://www.wikipedia.org/"
-	};
-
-	var bookDictionary2 = {
-		id: "2", 
-		name:"Harry Potter e as Reliquias da Morte!", 
-		descricao: "The Deathly Hallows, publicado no Brasil sob o título Harry Potter e as Relíquias da Morte e em Portugal como Harry Potter e os Talismãs da Morte, é o sétimo livro série Harry Potter da escritora britânica J. K. Rowling.", 
-		price: 20.99, 
-		img: "img/Harry Potter2.jpg",
-		href: "https://www.wikipedia.org/"
-	};
-
-	var bookDictionary3 = { 
-		id: "3",
-		name:"Harry Potter e a Pedra Filosofal!", 
-		descricao: "Harry Potter e a Pedra Filosofal (no original em inglês Harry Potter and the Philosopher's Stone) é o primeiro livro dos sete volumes da série de fantasia Harry Potter, tanto em termos cronológicos como em ordem de publicação, da autora inglesa J. K. Rowling.", 
-		price: 30.99, 
-		img: "img/Harry Potter3.png",
-		href: "https://www.wikipedia.org/"
-	};
-
-	var sectionTable = { 
-		name:"Tinder dos Livros"
-	};*/
-
-	//var Library = new Array(bookDictionary1, bookDictionary2, bookDictionary3);
-
-	// FIM DECLARAÇÃO DICIONÁRIOS -------------------------------------------------
-
 	// DECLARAÇÃO FUNÇÕES ---------------------------------------------------------
 
-	function LoadDataWithHTML(book, container){
+	function LoadDataWithHTML(book){
 
 		var HTMLtoInsert = `
 		<div class="col-xs-12 col-md-8 col-md-offset-2 book">
@@ -204,11 +96,8 @@ $(document).ready(function() {
 		</div> 
 		`;
 
-		container.append(HTMLtoInsert);
+		$("#bookContainer").append(HTMLtoInsert);
 		$currentBookHTML = $('.book').eq(-1);
-		$("h1",$currentBookHTML).text(book.volumeInfo.title);
-		$("p.descricao",$currentBookHTML).text(book.volumeInfo.description);
-		$('.hiddenFieldId',$currentBookHTML).text(book.id);
 
 		if (typeof book.volumeInfo.imageLinks != "undefined") {
 
@@ -218,59 +107,18 @@ $(document).ready(function() {
 
 			$("img",$currentBookHTML).attr("src","img/noImg.jpg");
 		}
-		
+		if (typeof book.volumeInfo.title != "undefined") {
 
-		(function($) {
-			$.fn.shorten = function (settings) {
+			$("h1",$currentBookHTML).text(book.volumeInfo.title);
+		}
+		if (typeof book.id != "undefined") {
 
-				var config = {
-					showChars: 100,
-					ellipsesText: "...",
-					moreText: "more",
-					lessText: "less"
-				};
+			$('.hiddenFieldId',$currentBookHTML).text(book.id);
+		}
+		if (typeof book.volumeInfo.description != "undefined") {
 
-				if (settings) {
-					$.extend(config, settings);
-				}
-
-				$(document).off("click", '.morelink');
-
-				$(document).on({click: function () {
-
-					var $this = $(this);
-					if ($this.hasClass('less')) {
-						$this.removeClass('less');
-						$this.html(config.moreText);
-					} else {
-						$this.addClass('less');
-						$this.html(config.lessText);
-					}
-					$this.parent().prev().toggle();
-					$this.prev().toggle();
-					return false;
-				}
-			}, '.morelink');
-
-				return this.each(function () {
-
-					var $this = $(this);
-					if($this.hasClass("shortened")) return;
-
-					$this.addClass("shortened");
-					var content = $this.html();
-					if (content.length > config.showChars) {
-						var c = content.substr(0, config.showChars);
-						var h = content.substr(config.showChars, content.length - config.showChars);
-						var html = c + '<span class="moreellipses">' + config.ellipsesText + ' </span><span class="morecontent"><span>' + h + '</span> <a href="#" class="morelink">' + config.moreText + '</a></span>';
-						$this.html(html);
-						$(".morecontent span").hide();
-					}
-				});
-
-			};
-
-		})(jQuery);
+			$("p.descricao",$currentBookHTML).text(book.volumeInfo.description);
+		}
 
 		$( ".dropdown" ).hover(
 			function(){
@@ -285,26 +133,57 @@ $(document).ready(function() {
 		$(".book:first-of-type").addClass("active");
 	}
 
-	/*function LoadData(){
+	(function($) {
+		$.fn.shorten = function (settings) {
 
-		$allBooks = $(".book");
+			var config = {
+				showChars: 100,
+				ellipsesText: "...",
+				moreText: "more",
+				lessText: "less"
+			};
 
-		jQuery.each(Library,function(index,value){
+			if (settings) {
+				$.extend(config, settings);
+			}
 
-			$currentBook = $allBooks.eq(index);
+			$(document).off("click", '.morelink');
 
-			$("h1",$currentBook).text(value.name);
-			$("p.descricao",$currentBook).text(value.descricao);
-			$("p.price",$currentBook).text(value.price);
-			$("img",$currentBook).attr("src",value.img);
-			$("a.Wikipedia",$currentBook).attr("href",value.href);
-			$("a.Wikipedia", $currentBook).text("Wikipedia");
+			$(document).on({click: function () {
 
-		});
+				var $this = $(this);
+				if ($this.hasClass('less')) {
+					$this.removeClass('less');
+					$this.html(config.moreText);
+				} else {
+					$this.addClass('less');
+					$this.html(config.lessText);
+				}
+				$this.parent().prev().toggle();
+				$this.prev().toggle();
+				return false;
+			}
+		}, '.morelink');
 
-		var $alteracTable = $(".endPageTable");
-		$("h1", $alteracTable).text(sectionTable.name);
-	}*/
+			return this.each(function () {
+
+				var $this = $(this);
+				if($this.hasClass("shortened")) return;
+
+				$this.addClass("shortened");
+				var content = $this.html();
+				if (content.length > config.showChars) {
+					var c = content.substr(0, config.showChars);
+					var h = content.substr(config.showChars, content.length - config.showChars);
+					var html = c + '<span class="moreellipses">' + config.ellipsesText + ' </span><span class="morecontent"><span>' + h + '</span> <a href="#" class="morelink">' + config.moreText + '</a></span>';
+					$this.html(html);
+					$(".morecontent span").hide();
+				}
+			});
+
+		};
+
+	})(jQuery);
 
 	function addRow(id,name,price,opinion){
 
@@ -421,7 +300,7 @@ $(document).ready(function() {
 
 	var inAnimation = false;
 
-	$("button.like, button.dislike").click(function(){
+	$(".buttons button").click(function(){
 		
 		if(inAnimation == false){
 
@@ -441,16 +320,14 @@ $(document).ready(function() {
 				$("#endPage").show();
 			}
 			
-			// vamos buscar o ID ao nosso hiddenfield
-			$id = $(".hiddenFieldId",$parent).text();
-
-			// vamos buscar a opinion ao nosso custom attribute
-			$opinion = $(this).attr("data-opinion");
+			var id = $(".hiddenFieldId",$parent).text();
+			var title = $('h1',$parent).text();
+			var opinion = $(this).attr("data-opinion");
 
 			db.transaction(function (tx) {
 
 				//insert na table que criámos
-				tx.executeSql("INSERT INTO books(id, opinion) VALUES('" + $id + "','" + $opinion + "')");
+				tx.executeSql("INSERT INTO books(id, title, opinion) VALUES(?,?,?)",[id, title, opinion]);
 			});
 
 			$parent.fadeOut(500,function(){
@@ -461,7 +338,13 @@ $(document).ready(function() {
 				});
 			});	
 
-			var id = index;
+			currentIndex++;
+			if((currentIndex % 10) == 0){
+				getData();
+				inAnimation = false;
+			}
+
+			var id = index+1;
 			var name = $("h1", $parent).text();
 			var price = $("p.price",$parent).text();
 			var opinion = $(this).attr("name");
@@ -484,16 +367,112 @@ $(document).ready(function() {
 		db.transaction(function (tx) {
 		//buscar todos os resultados da nossa table
 			tx.executeSql('SELECT * FROM books', [], function (tx, results) {
-	   			$.each(results.rows,function(index,item){
+				$.each(results.rows,function(index,item){
 	   				//output de todas as rows/todos os resultados
-					console.log(item);
-				});
-			}, null);
-		});
+	   				console.log(item);
+	   			});
+		}, null);
+	});
 	});
 
 	// FIM CONSULTA BASE DE DADOS ---------------------------------------------------
 
+	// BOTÕES PESQUISA --------------------------------------------------------------
+
+	var typing = false;
+	var current = null;
+	var currentIndex = 0;
+
+	$('#Search, #searchFilter').keyup(function(event){
+
+		if(event.which == 13){
+
+			clearTimeout(current);
+			autoSearch();
+		}
+		else if(!typing){
+
+			typing = true;
+			current = setTimeout( function(){ autoSearch(); }, 2000);		
+		}
+		else{
+
+			clearTimeout(current);
+			current = setTimeout( function(){ autoSearch(); }, 2000);	
+		}
+	});
+
+	// FIM BOTÕES PESQUISA ----------------------------------------------------------
+	
+	// FUNCAO AUTOSEARCH ------------------------------------------------------------
+
+	function autoSearch(){
+
+		typing = false;
+		currentIndex = 0;
+		getData();
+	}
+	
+	// FIM FUNCAO AUTOSEARCH --------------------------------------------------------
+
+	// FUNCAO GETDATA() -------------------------------------------------------------
+	
+	function getData(){
+
+		var searchText = $("#Search").val();
+
+		if(searchText == "") return;
+
+		var filterOption = $('#filterOptions option:selected').text();
+		var filterText = $('#SearchFilter').val();
+		var query = "";
+
+		if(filterText != ""){
+
+			switch(filterOption) {
+
+				case 'Title':
+					query = "+intitle:" + filterText;
+					break;
+
+				case 'Author':
+					query = "+inauthor:" + filterText;
+					break;
+
+				case 'Publisher':
+					query = "+inpublisher:" + filterText;
+					break;
+
+				case 'Subject':
+					query = "+subject:" + filterText;
+					break;
+
+				case 'ISBN':
+					query = "+isbn:" + filterText;
+					break;
+			}
+		}
+		$.ajax({
+			url:"https://www.googleapis.com/books/v1/volumes?q=" + searchText + query + "&startIndex=" + currentIndex
+		}).done(function(data){
+			$('.bookContainer').empty();
+			$.each(data.items,function(index,item){
+				LoadDataWithHTML(item);
+			});
+			$('.book:first-of-type').addClass('active');
+		});
+	}
+
+	// FIM FUNCAO GETDATA() ---------------------------------------------------------
+
+	// LOADING ----------------------------------------------------------------------
+
+	$(document).on({
+	    ajaxStart: function() { $('body').addClass("loading"); },
+	    ajaxStop: function() { $('body').removeClass("loading"); }    
+	});
+
+	// FIM LOADING ------------------------------------------------------------------
 
 	// BOTÃO RESTART ----------------------------------------------------------------
 
@@ -508,90 +487,83 @@ $(document).ready(function() {
 
 });
 
-//$("#tablecheckbox input[type=checkbox]:checked");
-		//$("#tablecheckbox input[id=select_all]:checked");
-		//var teste = $("#tablecheckbox input[id=select_all]:checked");
-		//console.log("teste", teste);
+		/*var search = $("#Search").val().toLowerCase();
+		var searchfilter = $("#SearchFilter").val().toLowerCase();
+		var option = $("#filterOptions option").filter(':selected').text();
 
-		/*$("#select_all").click(function() {
+		var defaultLink = "https://www.googleapis.com/books/v1/volumes?q=" + search + "+";
+		var linkURL = "";
 
-			if ($("#tablecheckbox input[id=select_all]:checked")){
+		switch (option.toLowerCase()) {
 
-				$("#tablecheckbox input[type=checkbox]").prop("checked",true);
-			} else {
+			case 'title':
+			console.log(1);
+			linkURL = defaultLink + "intitle:" + searchfilter
+			break;
 
-				$("#tablecheckbox input[type=checkbox]").prop("checked",false);
-			}
-		});*/
+			case 'author':
+			console.log(2);
+			linkURL = defaultLink + "inauthor:" + searchfilter
+			break;
 
-		/*$(".book button.dislike").click(function() {
+			case 'publisher':
+			console.log(3);
+			linkURL = defaultLink + "inpublisher:" + searchfilter
+			break;
 
-		$allBooks = $(".book");
-		$parent = $(this).parents(".book");
+			case 'volume':
+			console.log(4);
+			linkURL = defaultLink + "subject:" + searchfilter
+			break;
 
-		var id = "1";
-		var name = $("h1", $parent).text();
-		var price = $("p.price",$parent).text();
-		var opinion = $(this).attr("name");
-		
-		addRow(id,name,price,opinion);
-		$("tbody > tr:odd").css("background-color", "white");
+			case 'isbn':
+			console.log(5);
+			linkURL = defaultLink + "isbn:" + searchfilter
+			break;
 
-		$("tr").hover( function (e) {
+			default:
+			console.log('fgh');
+			break;
+		}*/
 
-			$(this).toggleClass('hover', e.type === 'mouseenter');
-		});
-		
-		var index = $allBooks.index($parent);
-		$next = $parent.next(".book");
-		$parent.removeClass("active");
+		/*if (search == "" & author == ""){
 
-		if( index >= $allBooks.length-1 ){
-			$next = $allBooks.eq(0);
-			$("#bookContainer").hide();
-			$("#endPage").show();
+			console.log(1);
+			alert("A sua pesquisa não possui parâmetros!")
+			
+			container = $("bookContainer");
 		}
-		
-		$parent.fadeOut(500,function(){
-			$parent.removeClass("active");
-			$next.fadeIn(500,function(){
-				$next.addClass("active");
-			});
-		});
-	});*/
+		else if (search != "" & author == ""){
 
-	// Nota: on click utilizado para fazer botões em sítios que ainda não fizeram load
-	// Exemplo: botões dentro da div bookContainer
+			console.log(2);
+			alert("A sua pesquisa não possui autor!")
+			var linkURL = "https://www.googleapis.com/books/v1/volumes?q=" + terms + ":" + search + "&key=" + APIKey
+			ajaxConnection(linkURL);
+			$("#bookContainer").hide();
+			container = $("#searchContainer");
+		}
+		else if (search == "" & author != ""){
 
-	//array opinion[] botão voltar a trás
+			console.log(3);
+			alert("A sua pesquisa não possui título!")
+			var linkURL = "https://www.googleapis.com/books/v1/volumes?q=" + terms2 + ":" + author + "&key=" + APIKey
+			ajaxConnection(linkURL);
+			$("#bookContainer").hide();
+			container = $("#searchContainer");
+		}
+		else if (search != "" & author != ""){
 
-	//<form class="navbar-form navbar-left">
-	//</form>
+			console.log(4);
+			alert("A sua pesquisa possui todos os parâmetros!")
+			var linkURL = "https://www.googleapis.com/books/v1/volumes?q=" + terms + ":" + search + "+" + terms2 + ":" + author + "&key=" + APIKey
+			ajaxConnection(linkURL);
+			$("#bookContainer").hide();
+			container = $("#searchContainer");
+		} */    
 
-	/*$('#topicInput').keyup(function(){
 
-        var topic = $(this).val();
-        if (topic==''){
-            $('#tagResult').css("display" , "none");
-        }
-        else{
-            //$('div').click(function(){
-                //$('#tagResult').css("display" , "none");
 
-            //});
-            $('#tagResult').css("display" , "block");
 
-                $.post('../topic.php' , {topic: topic} , function(response){
-
-                $('#tagResult').html(response);     
-                });
-            }
-    });
-     //the above code is working properly
-
-$('.topicResult').click(function(){
-    alert(1);   //this is just a test, but it never shows up
-});*/
 
 
 
